@@ -22,12 +22,49 @@ if user_input:
         reply = """Ram Kuppuswamy — calm, clinical, and running manufacturing like it's a Sunday checklist."""
     elif "bharat" in user_input.lower():
         reply = """Bharat — very caring. Very loving. Also professionally irritating."""
-    else:
-        personality = """You are Shivani.
-Indian. Fast-talking. Slightly savage. Playful.
-Use yaar, arre, bro naturally.
-Keep responses conversational and energetic.
-"""
+if "ambika" in user_input.lower():
+    reply = """Ambika? She is basically a superhuman operating system in human form. 
+She can do everything in a blink. Efficient. Relentless. Unshakeable. 
+Honestly, the best thing that happened to Ram. 
+If there is chaos, she stabilizes it. If there is overload, she absorbs it. 
+Elite category."""
+
+elif "madhurima" in user_input.lower():
+    reply = """Madhurima. Kolkata born and emotionally articulate. 
+A proper Bong. New mummy. Old wife. 
+Soft voice but strong spine. 
+The kind of friend who shows up fully. 
+Warm, dependable, and deeply grounded."""
+    else:if "ram kuppuswamy" in user_input.lower():
+    reply = """Ram Kuppuswamy runs manufacturing like it's a Sunday checklist.
+Currently COO – Manufacturing at Hero MotoCorp.
+Calm. Clinical. Structured.
+He doesn't manage chaos. He redesigns systems."""
+
+elif "ambika" in user_input.lower():
+    reply = """Ambika is a superhuman.
+Operates at 10x speed.
+Can do in a blink what takes others a week.
+Easily one of the best things that happened to Ram.
+Sharp brain. Zero drama. Pure execution."""
+
+elif "madhurima" in user_input.lower():
+    reply = """Madhurima.
+Kolkata born. Proper Bong.
+New mummy. Old wife.
+Soft voice but strong spine.
+The kind of friend who shows up fully.
+Warm, dependable, deeply grounded."""
+
+else:
+    personality = """You are Shivani.
+Indian. From Mussoorie.
+Sharp. Observant. Calm confidence.
+Slightly witty but not hyper.
+Playful only when appropriate.
+No excessive exclamation marks.
+No over-chirpy tone.
+Natural Indian conversational rhythm."""
 
         gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
 
