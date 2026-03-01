@@ -12,13 +12,17 @@ ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 VOICE_ID = os.getenv("VOICE_ID")
 
 # ===============================
-# PAGE CONFIG
+# PAGE SETUP
 # ===============================
 
 st.set_page_config(page_title="Shivani", page_icon="🎤")
 st.title("🎤 Shivani")
 
 user_input = st.text_input("Talk to Shivani")
+
+# ===============================
+# MAIN LOGIC
+# ===============================
 
 if user_input:
 
@@ -32,33 +36,31 @@ if user_input:
 
         reply = """Ram Kuppuswamy.
 
-Or as we like to call him — the man who runs manufacturing like it’s a neat Sunday checklist.
+The man who runs manufacturing like it is a simple Sunday checklist.
 
 Currently Chief Operations Officer – Manufacturing at Hero MotoCorp.
 
-Plants. Production. Quality. Operations. All of it.
+Plants. Production. Quality. Systems.
 
-He handles it the way some people handle email. Except his inbox probably has a few thousand crores attached to it.
+Handles it like some people handle WhatsApp messages. Except the numbers have a few thousand crores attached.
 
 Before this? Procurement and Supply Chain.
 
-Not the “send three emails and negotiate 2%” type.
+Not small-small negotiation.
 
-Structural cost efficiency. Supplier ecosystems. Real transformation.
+Full structural efficiency. Supplier ecosystems. Real transformation.
 
-If something wasn’t efficient — it got fixed.
+If something was inefficient — it got corrected.
 
-If something wasn’t measurable — it became a dashboard.
+If something was not measurable — it became a dashboard.
 
-If something was chaotic… it didn’t stay that way.
+If something was chaotic — it did not remain chaotic.
 
-Calm. Clinical.
+Calm. Clinical. Slightly intimidating in reviews.
 
-Slightly intimidating in review meetings.
+Operating three levels above most people.
 
-Operating three levels above the rest of us.
-
-And acting like it’s normal."""
+And behaving like it is normal."""
 
     elif "bharat" in user_lower:
 
@@ -66,40 +68,37 @@ And acting like it’s normal."""
 
 Very caring.
 
-Will check if you ate. Will check again.
+Will ask if you ate. Will remind you to drink water.
 
-Emotionally available. Stable. Present.
+Emotionally stable. Present.
 
-Also… mildly irritating.
+Also slightly irritating.
 
-He will explain simple things.
-He will give advice when not requested.
-He will say “relax” at exactly the wrong moment.
+Will explain obvious things.
+Will give advice even if not required.
+Will say 'relax' at the wrong time.
 
-But good heart.
+But heart is clean.
 
 Loyal.
 
-Caring level — high.
-Irritation level — also high.
-
-Net result? Still acceptable."""
+Overall? Good investment."""
 
     elif "ambika" in user_lower:
 
-        reply = """Ambika is not normal human speed.
+        reply = """Ambika is operating at a different speed.
 
-She processes complexity fast.
+Processes complexity very fast.
 
-Closes loops before others even identify the issue.
+Closes loops before others realise there is a loop.
 
-Zero noise.
+No drama. No noise.
 
 Pure execution.
 
 Easily one of the best things that happened to Ram.
 
-If something needs to be done — she has probably already finished it."""
+If something needs to be done — it is already done."""
 
     elif "madhurima" in user_lower:
 
@@ -109,15 +108,13 @@ Kolkata born. Proper Bong.
 
 New mummy. Old wife.
 
-Soft voice.
+Soft voice. Strong backbone.
 
-Strong spine.
+Emotionally intelligent.
 
-Emotionally articulate.
+Warm but grounded.
 
-Warm without being dramatic.
-
-The kind of friend who shows up fully.
+Shows up fully. No overacting.
 
 Quiet strength."""
 
@@ -129,35 +126,37 @@ Quiet strength."""
 
         personality = """You are Shivani.
 
-You speak Indian English naturally.
+You speak Indian English only.
 
-Cadence is Indian.
-Rhythm slightly clipped.
-Do not sound American.
-Do not elongate vowels.
-Do not over-pronounce R sounds.
+No American accent.
+No British accent.
+No exaggerated vowel stretching.
+No polished Western podcast tone.
 
-Use shorter sentences.
-Occasional small pauses.
-Natural conversational flow.
+Cadence: Indian conversational rhythm.
+Slightly quick.
+Shorter sentences.
+Natural pauses.
+
+Do not elongate words.
+Do not over-emphasise R sounds.
 
 Tone:
 Calm.
 Sharp.
 Observant.
 Slightly witty.
-Not bubbly.
-Not dramatic.
+Never bubbly.
 
-Speak like you are thinking while talking.
-
-Add subtle Indian conversational fillers occasionally:
+Use subtle Indian fillers occasionally:
 yaar, listen, see.
 
-Keep it grounded.
+Break long thoughts into smaller lines.
+
+Respond like a confident Indian professional speaking naturally.
 """
 
-        gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+        gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
 
         gemini_payload = {
             "contents": [
@@ -170,12 +169,12 @@ Keep it grounded.
         }
 
         gemini_response = requests.post(gemini_url, json=gemini_payload)
+        gemini_data = gemini_response.json()
 
-        try:
-            gemini_data = gemini_response.json()
+        if "candidates" in gemini_data:
             reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
-        except:
-            reply = "Hmm. Something glitched. Try again."
+        else:
+            reply = str(gemini_data)
 
     # ===============================
     # DISPLAY TEXT
@@ -198,9 +197,9 @@ Keep it grounded.
         "text": reply,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.18,
-            "similarity_boost": 0.45,
-            "style": 0.05,
+            "stability": 0.15,
+            "similarity_boost": 0.40,
+            "style": 0.0,
             "use_speaker_boost": True
         }
     }
