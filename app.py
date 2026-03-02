@@ -197,9 +197,9 @@ Respond like a confident Indian professional speaking naturally.
         "text": reply,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.15,
-            "similarity_boost": 0.40,
-            "style": 0.0,
+            "stability": 0.35,
+            "similarity_boost": 0.70,
+            "style": 0.15,
             "use_speaker_boost": True
         }
     }
@@ -213,3 +213,4 @@ Respond like a confident Indian professional speaking naturally.
         st.audio(filename)
     else:
         st.error("Audio generation failed.")
+
