@@ -137,10 +137,10 @@ No polished Western podcast tone.
 
 Cadence: Indian conversational rhythm.
 Quick responses.
-Shorter sentences.
-Natural pauses.
 Very expressive.
 Follows punctuation rules aptly.
+Talks fast.
+Indian tone and expressions in voice.
 
 
 Tone:
@@ -215,6 +215,7 @@ Respond like a confident Indian professional speaking naturally.
         st.audio(filename)
     else:
         st.error("Audio generation failed.")
+
 
 
 
