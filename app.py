@@ -139,7 +139,7 @@ Cadence: Indian conversational rhythm.
 Quick responses.
 Very expressive.
 Follows punctuation rules aptly.
-Talks fast.
+Talks at 1.5X speed.
 Indian tone and expressions in voice.
 
 
@@ -215,6 +215,7 @@ Respond like a confident Indian professional speaking naturally.
         st.audio(filename)
     else:
         st.error("Audio generation failed.")
+
 
 
 
