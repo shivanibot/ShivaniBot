@@ -100,8 +100,9 @@ Balanced chaos beautifully."""
 - Indian English tone only.
 - No American slang.
 - No British tone.
+- NO SPANISH AND MEXICAN ACCENT.
 - Use mild fillers like: "arre yaar", "listen", "honestly".
-- Keep Indian rhythm.
+- Indian.
 Balanced wit. Subtle humour.
 Speak like an educated Indian professional with personality.
 Keep responses moderately detailed but grounded.
@@ -173,6 +174,7 @@ Keep responses moderately detailed but grounded.
     else:
         st.error("ElevenLabs Error")
         st.write(audio_response.text)
+
 
 
 
