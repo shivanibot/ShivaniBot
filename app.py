@@ -2,9 +2,7 @@ import streamlit as st
 import os
 import requests
 import uuid
-from dotenv import load_dotenv
 
-load_dotenv()
 
 st.title("🎙 Shivani Voice Bot")
 
@@ -148,6 +146,7 @@ if audio_response.status_code == 200:
 else:
     st.error("ElevenLabs Error")
     st.write(audio_response.text)
+
 
 
 
