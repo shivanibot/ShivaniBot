@@ -107,7 +107,7 @@ Speak like an educated Indian professional with personality.
 Keep responses moderately detailed but grounded.
 """
 
-        gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
+        gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
 
         gemini_payload = {
             "contents": [
@@ -173,6 +173,7 @@ Keep responses moderately detailed but grounded.
     else:
         st.error("ElevenLabs Error")
         st.write(audio_response.text)
+
 
 
 
