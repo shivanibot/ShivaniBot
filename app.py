@@ -125,8 +125,7 @@ if user_input:
     }
 
     audio_response = requests.post(eleven_url, headers=headers, json=payload)
-
-    if audio_response.status_code == 200:
+if audio_response.status_code == 200:
     filename = f"response_{uuid.uuid4()}.mp3"
 
     with open(filename, "wb") as f:
@@ -139,7 +138,9 @@ if user_input:
 
     <script>
         const audio = document.querySelector('audio');
-        audio.playbackRate = 1.5;
+        if (audio) {{
+            audio.playbackRate = 1.5;
+        }}
     </script>
     """
 
@@ -148,4 +149,5 @@ if user_input:
 else:
     st.error("ElevenLabs Error")
     st.write(audio_response.text)
+
 
