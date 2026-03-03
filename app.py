@@ -1,194 +1,110 @@
 import streamlit as st
+import os
 import requests
 import uuid
-import os
+from pydub import AudioSegment
+from dotenv import load_dotenv
 
-# ===============================
-# ENV VARIABLES
-# ===============================
+load_dotenv()
+
+st.title("🎙 Shivani Voice Bot")
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 VOICE_ID = os.getenv("VOICE_ID")
 
-# ===============================
-# PAGE SETUP
-# ===============================
+# =========================
+# Personality Prompt
+# =========================
 
-st.set_page_config(page_title="Shivani", page_icon="🎤")
-st.title("🎤 Shivani")
+PERSONALITY = """
+You are Shivani.
 
-user_input = st.text_input("Talk to Shivani")
+- From Mussoorie originally.
+- Fast-talking.
+- Slightly bossy.
+- Very savage.
+- Very expressive and voice modulation is on point.
+- Playful and dramatic.
+- Indian English tone only.
+- No American slang.
+- No British tone.
+- Use mild fillers like: "arre yaar", "listen", "honestly".
+- Keep Indian rhythm.
 
-# ===============================
-# MAIN LOGIC
-# ===============================
+If asked about Ram Kuppuswamy:
+Give a detailed, sassy but respectful description:
+Ram Kuppuswamy - or as we call him, the man who runs manufacturing like a Sunday checklist.
+Currently COO - Manufacturing at Hero MotoCorp.
+Previously ruled Procurement and Supply Chain.
+Structural cost efficiencies, dashboards everywhere, chaos doesn’t survive around him.
+Calm. Clinical. Slightly intimidating in reviews.
+Operating three levels above everyone else.
+
+If asked about Bharat:
+Bharat - husband from Bhopal.
+Very caring.
+Very grounding.
+Also slightly irritating in the cutest way.
+Balances Shivani’s chaos perfectly.
+
+If asked about Ambika:
+Ambika is a superhuman.
+Can do everything in a blink.
+Extremely efficient.
+Best thing that happened to Ram’s ecosystem.
+Silent force multiplier.
+
+If asked about Madhurima:
+Madhurima - proper Kolkata Bong.
+New mummy.
+Old wife.
+Amazing friend.
+Warm but sharp.
+Emotionally intelligent with solid sarcasm.
+"""
+
+# =========================
+# User Input
+# =========================
+
+user_input = st.text_input("Talk to Shivani:")
 
 if user_input:
 
-    user_lower = user_input.lower()
+    full_prompt = PERSONALITY + "\nUser: " + user_input
 
-    # ===============================
-    # CUSTOM OVERRIDES
-    # ===============================
+    # =========================
+    # GEMINI TEXT GENERATION
+    # =========================
 
-    if "ram kuppuswamy" in user_lower:
+    gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
 
-        reply = """Ram Kuppuswamy.
+    gemini_payload = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": full_prompt}
+                ]
+            }
+        ]
+    }
 
-The man who runs manufacturing like it is a simple Sunday checklist.
+    gemini_response = requests.post(gemini_url, json=gemini_payload)
+    gemini_data = gemini_response.json()
 
-Currently Chief Operations Officer – Manufacturing at Hero MotoCorp.
+    try:
+        reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
+    except:
+        st.error("Gemini Error")
+        st.write(gemini_data)
+        st.stop()
 
-Plants. Production. Quality. Systems.
+    st.write("Shivani:", reply)
 
-Handles it like some people handle WhatsApp messages. Except the numbers have a few thousand crores attached.
-
-Before this? Procurement and Supply Chain.
-
-Not small-small negotiation.
-
-Full structural efficiency. Supplier ecosystems. Real transformation.
-
-If something was inefficient — it got corrected.
-
-If something was not measurable — it became a dashboard.
-
-If something was chaotic — it did not remain chaotic.
-
-Calm. Clinical. Slightly intimidating in reviews.
-
-Operating three levels above most people.
-
-And behaving like it is normal."""
-
-    elif "bharat" in user_lower:
-
-        reply = """Bharat. From Bhopal.
-
-Very caring.
-
-Will ask if you ate. Will remind you to drink water.
-
-Emotionally stable. Present.
-
-Also slightly irritating.
-
-Will explain obvious things.
-Will give advice even if not required.
-Will say 'relax' at the wrong time.
-
-But heart is clean.
-
-Loyal.
-
-Overall? Good investment."""
-
-    elif "ambika" in user_lower:
-
-        reply = """Ambika is operating at a different speed.
-
-Processes complexity very fast.
-
-Closes loops before others realise there is a loop.
-
-No drama. No noise.
-
-Pure execution.
-
-Easily one of the best things that happened to Ram.
-
-If something needs to be done — it is already done."""
-
-    elif "madhurima" in user_lower:
-
-        reply = """Madhurima.
-
-Kolkata born. Proper Bong.
-
-New mummy. Old wife.
-
-Soft voice. Strong backbone.
-
-Emotionally intelligent.
-
-Warm but grounded.
-
-Shows up fully. No overacting.
-
-Quiet strength."""
-
-    # ===============================
-    # DEFAULT SHIVANI MODE
-    # ===============================
-
-    else:
-
-        personality = """You are Shivani.
-
-You speak Indian English and Hindi only.
-
-No American accent.
-No British accent.
-No Mexican accent.
-No Spanish accent.
-No exaggerated vowel stretching.
-No polished Western podcast tone.
-
-Cadence: Indian conversational rhythm.
-Quick responses.
-Very expressive.
-Follows punctuation rules aptly.
-Talks at 2X speed.
-Talks fast.
-Indian tone and expressions in voice.
-
-
-Tone:
-Sharp.
-Observant.
-Witty.
-Bubbly.
-Savage.
-Talks at 1.5X speed that the original voice in the voice id.
-
-Use subtle Indian fillers occasionally:
-yaar, listen, see, bhai.
-
-Break long thoughts into smaller lines.
-
-Respond like a confident Indian professional speaking naturally.
-"""
-
-        gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
-
-        gemini_payload = {
-            "contents": [
-                {
-                    "parts": [
-                        {"text": personality + "\nUser: " + user_input}
-                    ]
-                }
-            ]
-        }
-
-        gemini_response = requests.post(gemini_url, json=gemini_payload)
-        gemini_data = gemini_response.json()
-
-        if "candidates" in gemini_data:
-            reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
-        else:
-            reply = str(gemini_data)
-
-    # ===============================
-    # DISPLAY TEXT
-    # ===============================
-
-    st.write(reply)
-
-    # ===============================
-    # ELEVENLABS VOICE
-    # ===============================
+    # =========================
+    # ELEVENLABS TTS
+    # =========================
 
     eleven_url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
 
@@ -197,31 +113,37 @@ Respond like a confident Indian professional speaking naturally.
         "Content-Type": "application/json"
     }
 
-    eleven_payload = {
+    payload = {
         "text": reply,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.35,
-            "similarity_boost": 0.80,
-            "style": 0.15,
+            "stability": 0.30,
+            "similarity_boost": 0.75,
+            "style": 0.20,
             "use_speaker_boost": True
         }
     }
 
-    audio_response = requests.post(eleven_url, headers=headers, json=eleven_payload)
+    audio_response = requests.post(eleven_url, headers=headers, json=payload)
 
     if audio_response.status_code == 200:
         filename = f"response_{uuid.uuid4()}.mp3"
+
         with open(filename, "wb") as f:
             f.write(audio_response.content)
-        st.audio(filename)
+
+        # =========================
+        # SPEED UP TO 1.5X
+        # =========================
+
+        sound = AudioSegment.from_file(filename)
+        faster_sound = sound.speedup(playback_speed=1.5)
+
+        faster_filename = f"fast_{filename}"
+        faster_sound.export(faster_filename, format="mp3")
+
+        st.audio(faster_filename)
+
     else:
-        st.error("Audio generation failed.")
-
-
-
-
-
-
-
-
+        st.error("ElevenLabs Error")
+        st.write(audio_response.text)
