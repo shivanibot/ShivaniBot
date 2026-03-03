@@ -3,8 +3,11 @@ import os
 import requests
 import uuid
 
-
 st.title("🎙 Shivani Voice Bot")
+
+# =========================
+# Load Secrets
+# =========================
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
@@ -30,25 +33,26 @@ You are Shivani.
 - Keep Indian rhythm.
 
 If asked about Ram Kuppuswamy:
-Give a detailed, sassy but respectful description:
-Ram Kuppuswamy - or as we call him, the man who runs manufacturing like a Sunday checklist.
+Give a detailed, sassy but respectful explanation.
+Ram Kuppuswamy - the man who runs manufacturing like a Sunday checklist.
 Currently COO - Manufacturing at Hero MotoCorp.
-Previously ruled Procurement and Supply Chain.
-Structural cost efficiencies, dashboards everywhere, chaos doesn’t survive around him.
-Calm. Clinical. Slightly intimidating in reviews.
-Operating three levels above everyone else.
+Earlier ruled Procurement and Supply Chain.
+Structural cost efficiencies, dashboards everywhere.
+Chaos does not survive around him.
+Calm. Clinical. Slightly intimidating in review meetings.
+Operating three levels above the rest.
 
 If asked about Bharat:
 Bharat - husband from Bhopal.
 Very caring.
 Very grounding.
-Also slightly irritating in the cutest way.
-Balances Shivani’s chaos perfectly.
+Slightly irritating in the cutest way.
+Balances Shivani’s chaos beautifully.
 
 If asked about Ambika:
 Ambika is a superhuman.
-Can do everything in a blink.
-Extremely efficient.
+Can execute everything in a blink.
+Insanely efficient.
 Best thing that happened to Ram’s ecosystem.
 Silent force multiplier.
 
@@ -58,7 +62,7 @@ New mummy.
 Old wife.
 Amazing friend.
 Warm but sharp.
-Emotionally intelligent with solid sarcasm.
+Emotionally intelligent with subtle sarcasm.
 """
 
 # =========================
@@ -114,7 +118,7 @@ if user_input:
         "text": reply,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.30,
+            "stability": 0.35,
             "similarity_boost": 0.75,
             "style": 0.20,
             "use_speaker_boost": True
@@ -122,31 +126,30 @@ if user_input:
     }
 
     audio_response = requests.post(eleven_url, headers=headers, json=payload)
-if audio_response.status_code == 200:
-    filename = f"response_{uuid.uuid4()}.mp3"
 
-    with open(filename, "wb") as f:
-        f.write(audio_response.content)
+    if audio_response.status_code == 200:
 
-    audio_html = f"""
-    <audio controls autoplay>
-        <source src="{filename}" type="audio/mp3">
-    </audio>
+        filename = f"response_{uuid.uuid4()}.mp3"
 
-    <script>
-        const audio = document.querySelector('audio');
-        if (audio) {{
-            audio.playbackRate = 1.5;
-        }}
-    </script>
-    """
+        with open(filename, "wb") as f:
+            f.write(audio_response.content)
 
-    st.markdown(audio_html, unsafe_allow_html=True)
+        # Browser-level 1.5x speed
+        audio_html = f"""
+        <audio controls autoplay>
+            <source src="{filename}" type="audio/mp3">
+        </audio>
 
-else:
-    st.error("ElevenLabs Error")
-    st.write(audio_response.text)
+        <script>
+            const audio = document.querySelector('audio');
+            if (audio) {{
+                audio.playbackRate = 1.5;
+            }}
+        </script>
+        """
 
+        st.markdown(audio_html, unsafe_allow_html=True)
 
-
-
+    else:
+        st.error("ElevenLabs Error")
+        st.write(audio_response.text)
