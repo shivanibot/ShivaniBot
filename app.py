@@ -2,7 +2,6 @@ import streamlit as st
 import os
 import requests
 import uuid
-from pydub import AudioSegment
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -149,5 +148,6 @@ if audio_response.status_code == 200:
 else:
     st.error("ElevenLabs Error")
     st.write(audio_response.text)
+
 
 
