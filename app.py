@@ -127,23 +127,25 @@ if user_input:
     audio_response = requests.post(eleven_url, headers=headers, json=payload)
 
     if audio_response.status_code == 200:
-        filename = f"response_{uuid.uuid4()}.mp3"
+    filename = f"response_{uuid.uuid4()}.mp3"
 
-        with open(filename, "wb") as f:
-            f.write(audio_response.content)
+    with open(filename, "wb") as f:
+        f.write(audio_response.content)
 
-        # =========================
-        # SPEED UP TO 1.5X
-        # =========================
+    audio_html = f"""
+    <audio controls autoplay>
+        <source src="{filename}" type="audio/mp3">
+    </audio>
 
-        sound = AudioSegment.from_file(filename)
-        faster_sound = sound.speedup(playback_speed=1.5)
+    <script>
+        const audio = document.querySelector('audio');
+        audio.playbackRate = 1.5;
+    </script>
+    """
 
-        faster_filename = f"fast_{filename}"
-        faster_sound.export(faster_filename, format="mp3")
+    st.markdown(audio_html, unsafe_allow_html=True)
 
-        st.audio(faster_filename)
+else:
+    st.error("ElevenLabs Error")
+    st.write(audio_response.text)
 
-    else:
-        st.error("ElevenLabs Error")
-        st.write(audio_response.text)
