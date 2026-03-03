@@ -1,24 +1,95 @@
 import streamlit as st
-import os
 import requests
 import uuid
+import os
 
-st.title("🎙 Shivani Voice Bot")
-
-# =========================
-# Load Secrets
-# =========================
+# ==============================
+# 🔐 Environment Variables
+# ==============================
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 VOICE_ID = os.getenv("VOICE_ID")
 
-# =========================
-# Personality Prompt
-# =========================
+# ==============================
+# 🎨 Page Setup
+# ==============================
 
-PERSONALITY = """
-You are Shivani.
+st.set_page_config(page_title="Shivani Voice Bot", page_icon="🎙️")
+st.title("🎙️ Shivani Voice Bot")
+
+user_input = st.text_input("Talk to Shivani:")
+
+if user_input:
+
+    # ==============================
+    # 🧠 Custom Overrides
+    # ==============================
+
+    lower_input = user_input.lower()
+
+    if "ram kuppuswamy" in lower_input:
+
+        reply = """Ram Kuppuswamy — the man who runs manufacturing like it is a Sunday checklist.
+
+Currently Chief Operations Officer – Manufacturing at Hero MotoCorp. Plants, production numbers, quality standards — handled calmly, clinically, efficiently.
+
+Before that? Procurement and Supply Chain. Not the basic negotiation type. Structural cost efficiency. Supplier ecosystem shaping. Transformation at scale.
+
+If something was inefficient — it got fixed.
+If something was not measurable — it became a dashboard.
+If something was chaotic — it did not remain that way.
+
+Slightly intimidating in review meetings.
+Three steps ahead in every discussion.
+But undeniably operating at a different altitude."""
+
+    elif "bharat" in lower_input:
+
+        reply = """Bharat. From Bhopal.
+
+Very caring. Extremely dependable. 
+And professionally irritating in the most affectionate way possible.
+
+Will remind you to drink water.
+Will argue about directions even when Google Maps exists.
+Will check if you ate.
+Will also question every decision just to 'stress test' it.
+
+Solid husband energy. Slightly annoying. Fully committed."""
+
+    elif "ambika" in lower_input:
+
+        reply = """Ambika is not normal. She is operationally superhuman.
+
+Can execute ten things in the time most people draft one email.
+Speed. Precision. Zero drama.
+
+Best thing that happened to Ram’s ecosystem.
+High trust. High output. No noise.
+
+If efficiency had a human form — Ambika."""
+
+    elif "madhurima" in lower_input:
+
+        reply = """Madhurima. Kolkata born. Proper Bong.
+
+New mummy. Old wife. 
+Soft voice. Strong spine.
+
+Emotionally articulate. Grounded. Loyal.
+The kind of friend who shows up fully.
+
+Warm presence. Sharp mind.
+Balanced chaos beautifully."""
+
+    else:
+
+        # ==============================
+        # 🧠 Gemini Personality Prompt
+        # ==============================
+
+        personality = """You are Shivani.
 
 - From Mussoorie originally.
 - Fast-talking.
@@ -31,81 +102,44 @@ You are Shivani.
 - No British tone.
 - Use mild fillers like: "arre yaar", "listen", "honestly".
 - Keep Indian rhythm.
-
-If asked about Ram Kuppuswamy:
-Give a detailed, sassy but respectful explanation.
-Ram Kuppuswamy - the man who runs manufacturing like a Sunday checklist.
-Currently COO - Manufacturing at Hero MotoCorp.
-Earlier ruled Procurement and Supply Chain.
-Structural cost efficiencies, dashboards everywhere.
-Chaos does not survive around him.
-Calm. Clinical. Slightly intimidating in review meetings.
-Operating three levels above the rest.
-
-If asked about Bharat:
-Bharat - husband from Bhopal.
-Very caring.
-Very grounding.
-Slightly irritating in the cutest way.
-Balances Shivani’s chaos beautifully.
-
-If asked about Ambika:
-Ambika is a superhuman.
-Can execute everything in a blink.
-Insanely efficient.
-Best thing that happened to Ram’s ecosystem.
-Silent force multiplier.
-
-If asked about Madhurima:
-Madhurima - proper Kolkata Bong.
-New mummy.
-Old wife.
-Amazing friend.
-Warm but sharp.
-Emotionally intelligent with subtle sarcasm.
+Balanced wit. Subtle humour.
+Speak like an educated Indian professional with personality.
+Keep responses moderately detailed but grounded.
 """
 
-# =========================
-# User Input
-# =========================
+        gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
 
-user_input = st.text_input("Talk to Shivani:")
+        gemini_payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": personality + "\nUser: " + user_input
+                        }
+                    ]
+                }
+            ]
+        }
 
-if user_input:
+        gemini_response = requests.post(gemini_url, json=gemini_payload)
 
-    full_prompt = PERSONALITY + "\nUser: " + user_input
+        if gemini_response.status_code == 200:
+            gemini_data = gemini_response.json()
+            reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            st.error("Gemini API Error")
+            st.write(gemini_response.text)
+            st.stop()
 
-    # =========================
-    # GEMINI TEXT GENERATION
-    # =========================
-
-    gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
-
-    gemini_payload = {
-        "contents": [
-            {
-                "parts": [
-                    {"text": full_prompt}
-                ]
-            }
-        ]
-    }
-
-    gemini_response = requests.post(gemini_url, json=gemini_payload)
-    gemini_data = gemini_response.json()
-
-    try:
-        reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
-    except:
-        st.error("Gemini Error")
-        st.write(gemini_data)
-        st.stop()
+    # ==============================
+    # 💬 Display Text
+    # ==============================
 
     st.write("Shivani:", reply)
 
-    # =========================
-    # ELEVENLABS TTS
-    # =========================
+    # ==============================
+    # 🔊 ElevenLabs Voice
+    # ==============================
 
     eleven_url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
 
@@ -118,9 +152,9 @@ if user_input:
         "text": reply,
         "model_id": "eleven_multilingual_v2",
         "voice_settings": {
-            "stability": 0.35,
-            "similarity_boost": 0.75,
-            "style": 0.20,
+            "stability": 0.6,
+            "similarity_boost": 0.8,
+            "style": 0.3,
             "use_speaker_boost": True
         }
     }
@@ -134,21 +168,7 @@ if user_input:
         with open(filename, "wb") as f:
             f.write(audio_response.content)
 
-        # Browser-level 1.5x speed
-        audio_html = f"""
-        <audio controls autoplay>
-            <source src="{filename}" type="audio/mp3">
-        </audio>
-
-        <script>
-            const audio = document.querySelector('audio');
-            if (audio) {{
-                audio.playbackRate = 1.5;
-            }}
-        </script>
-        """
-
-        st.markdown(audio_html, unsafe_allow_html=True)
+        st.audio(filename)
 
     else:
         st.error("ElevenLabs Error")
