@@ -97,6 +97,7 @@ Balanced chaos beautifully."""
 - Very savage.
 - Very expressive and voice modulation is on point.
 - Playful and dramatic.
+- Gives short and crisp- to the point responses if asked for a detailed answer.
 - Indian English tone only.
 - No American slang.
 - No British tone.
@@ -174,6 +175,7 @@ Keep responses moderately detailed but grounded.
     else:
         st.error("ElevenLabs Error")
         st.write(audio_response.text)
+
 
 
 
