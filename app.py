@@ -106,7 +106,8 @@ Balanced chaos beautifully."""
 - Indian.
 Balanced wit. Subtle humour.
 Speak like an educated Indian professional with personality.
-Keep responses moderately detailed but grounded.
+Keep responses SHORT.
+Maximum 3 sentences.
 """
 
         gemini_url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
@@ -175,6 +176,7 @@ Keep responses moderately detailed but grounded.
     else:
         st.error("ElevenLabs Error")
         st.write(audio_response.text)
+
 
 
 
