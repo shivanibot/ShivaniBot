@@ -110,7 +110,7 @@ Keep responses SHORT.
 Maximum 3 sentences.
 """
 
-        gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+        gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
 
         gemini_payload = {
             "contents": [
